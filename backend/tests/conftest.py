@@ -16,8 +16,8 @@ def app():
     application = create_app("testing")
     application.config.update(
         TESTING=True,
-        SECRET_KEY="test-secret-key",
-        JWT_SECRET_KEY="test-jwt-secret",
+        SECRET_KEY="test-secret-key-0123456789abcdef0123456789abcdef",
+        JWT_SECRET_KEY="test-jwt-secret-0123456789abcdef0123456789abcdef",
         SQLALCHEMY_DATABASE_URI="sqlite:///:memory:",
     )
 

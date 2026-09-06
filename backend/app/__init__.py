@@ -33,6 +33,10 @@ def create_app(config_name=None):
     migrate.init_app(app, db)
     jwt.init_app(app)
 
+    from .jwt_handlers import configure_jwt
+
+    configure_jwt(jwt)
+
     # Import models so they are registered with the metadata that
     # Flask-Migrate / db.create_all() relies on.
     with app.app_context():
