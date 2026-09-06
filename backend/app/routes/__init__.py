@@ -3,6 +3,7 @@
 from .auth import auth_bp
 from .departments import departments_bp
 from .doctors import doctors_bp
+from .doctors_panel import doctors_panel_bp
 from .health import health_bp
 from .patients import patients_bp
 
@@ -14,3 +15,4 @@ def register_blueprints(app):
     app.register_blueprint(patients_bp)
     app.register_blueprint(departments_bp)
     app.register_blueprint(doctors_bp)
+    app.register_blueprint(doctors_panel_bp)
