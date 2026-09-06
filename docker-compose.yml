@@ -1,0 +1,67 @@
+# =====================================================================
+# AYUConnect - Docker Compose (development)
+#
+# Architecture: frontend (nginx) -> backend (Flask) -> database (MySQL)
+#
+# Usage:
+#   docker compose up --build
+#   Frontend:  http://localhost:3000
+#   Backend:   http://localhost:5000/api/health
+#
+# WARNING: The MySQL credentials below are for LOCAL development only.
+# Production must use managed secrets and a managed database.
+# =====================================================================
+
+services:
+  database:
+    image: mysql:8.0
+    container_name: ayuconnect-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-ayuconnect}
+      MYSQL_USER: ${MYSQL_USER:-ayuconnect}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-ayuconnect}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ayuconnect_mysql_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD:-root}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build: ./backend
+    container_name: ayuconnect-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      FLASK_ENV: development
+      DATABASE_URL: mysql+pymysql://${MYSQL_USER:-ayuconnect}:${MYSQL_PASSWORD:-ayuconnect}@database:3306/${MYSQL_DATABASE:-ayuconnect}
+      CORS_ORIGINS: http://localhost:3000
+    # Development override: use the Flask debug server inside the container.
+    command: ["python", "run.py"]
+    ports:
+      - "5000:5000"
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build: ./frontend
+    container_name: ayuconnect-web
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  ayuconnect_mysql_data:

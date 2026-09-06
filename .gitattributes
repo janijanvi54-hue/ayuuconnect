@@ -1,0 +1,14 @@
+# Normalize line endings: LF in the repository on every platform.
+* text=auto eol=lf
+
+# Binary files stay untouched.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.exe binary
+*.msi binary
+*.db binary

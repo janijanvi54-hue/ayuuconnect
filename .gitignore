@@ -1,0 +1,55 @@
+# =====================================================================
+# AYUConnect - .gitignore
+# =====================================================================
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+*.db
+*.sqlite3
+
+# Flask
+instance/
+backend/migrations/versions/*.pyc
+
+# JS / Node
+node_modules/
+frontend/dist/
+frontend/.vite/
+*.log
+npm-debug.log*
+
+# Vite
+frontend/.env
+frontend/.env.local
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Docker
+*.pid
+
+# Misc
+*.bak
+*.tmp

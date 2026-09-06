@@ -1,0 +1,100 @@
+/* AYUConnect design tokens and base styles. */
+
+:root {
+  --ac-primary: #0f6e5c;
+  --ac-primary-dark: #0a5446;
+  --ac-primary-light: #e6f4f0;
+  --ac-accent: #d98e48;
+  --ac-ink: #1f2a2e;
+  --ac-muted: #5b6b70;
+  --ac-bg: #f6f9f8;
+  --ac-border: #dfe8e5;
+  --ac-danger: #b3402f;
+  --ac-radius: 0.75rem;
+  --ac-shadow: 0 6px 24px rgba(15, 110, 92, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100vh;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  color: var(--ac-ink);
+  background-color: var(--ac-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--ac-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--ac-primary-dark);
+}
+
+.btn-primary {
+  background-color: var(--ac-primary);
+  border-color: var(--ac-primary);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--ac-primary-dark);
+  border-color: var(--ac-primary-dark);
+}
+
+.btn-outline-primary {
+  color: var(--ac-primary);
+  border-color: var(--ac-primary);
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  background-color: var(--ac-primary);
+  border-color: var(--ac-primary);
+  color: #fff;
+}
+
+.card {
+  border: 1px solid var(--ac-border);
+  border-radius: var(--ac-radius);
+  box-shadow: var(--ac-shadow);
+}
+
+.badge-soft {
+  background: var(--ac-primary-light);
+  color: var(--ac-primary-dark);
+  font-weight: 500;
+}
+
+.text-muted {
+  color: var(--ac-muted) !important;
+}
+
+.section-title {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Healthcare disclaimer banner */
+.disclaimer {
+  background: #fff8ef;
+  border: 1px solid #f1d9b8;
+  color: #6b4f2a;
+  border-radius: var(--ac-radius);
+}
+
+@media (max-width: 576px) {
+  .card-body {
+    padding: 1rem;
+  }
+}
