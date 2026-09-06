@@ -6,6 +6,7 @@ from sqlalchemy.exc import IntegrityError
 
 from ..extensions import db
 from ..models import Patient, User, UserRole
+from ..services.serializers import patient_payload
 from ..utils.response import ApiError
 
 EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
@@ -91,8 +92,7 @@ def user_payload(user):
     """Public representation of a user used by auth and profile endpoints."""
     profile = None
     if user.role == UserRole.PATIENT and user.patient is not None:
-        patient = user.patient
-        profile = _patient_payload(patient)
+        profile = patient_payload(user.patient)
     elif user.role == UserRole.DOCTOR and user.doctor is not None:
         doctor = user.doctor
         profile = {
@@ -113,17 +113,4 @@ def user_payload(user):
         "avatar_url": user.avatar_url,
         "is_active": user.is_active,
         "profile": profile,
-    }
-
-
-def _patient_payload(patient):
-    return {
-        "id": patient.id,
-        "department_id": patient.department_id,
-        "date_of_birth": patient.date_of_birth.isoformat() if patient.date_of_birth else None,
-        "gender": patient.gender.value if patient.gender else None,
-        "blood_group": patient.blood_group,
-        "emergency_contact": patient.emergency_contact,
-        "consent_records": patient.consent_records,
-        "consent_ai": patient.consent_ai,
     }
