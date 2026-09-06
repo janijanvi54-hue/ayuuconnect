@@ -39,6 +39,29 @@ def doctor_card_payload(doctor):
     }
 
 
+def doctor_detail_payload(doctor):
+    """Public doctor detail: card plus a concise availability overview."""
+    availability = [
+        slot_payload(slot)
+        for slot in sorted(doctor.availability, key=lambda s: (s.weekday, s.start_time))
+        if slot.is_active
+    ]
+    payload = doctor_card_payload(doctor)
+    payload["availability"] = availability
+    return payload
+
+
+def slot_payload(slot):
+    """Availability slot: weekday 0=Monday..6=Sunday, HH:MM times."""
+    return {
+        "id": slot.id,
+        "weekday": slot.weekday,
+        "start_time": slot.start_time.strftime("%H:%M"),
+        "end_time": slot.end_time.strftime("%H:%M"),
+        "is_active": slot.is_active,
+    }
+
+
 def _department_ref(department):
     return {"id": department.id, "name": department.name, "slug": department.slug}
 
