@@ -3,8 +3,13 @@
 from flask import Blueprint, request
 
 from ..extensions import db
-from ..models import Patient
-from ..services import doctor_service
+from ..models import AppointmentStatus, Patient
+from ..services import (
+    appointment_service,
+    audit_service,
+    doctor_service,
+    notification_service,
+)
 from ..services.serializers import (
     appointment_payload,
     patient_card_payload,
@@ -116,4 +121,35 @@ def list_appointments():
             "appointments": [appointment_payload(a) for a in appointments],
             "count": len(appointments),
         },
+    )
+
+
+@doctors_panel_bp.patch("/appointments/<int:appointment_id>")
+@roles_required("DOCTOR")
+def patch_appointment(appointment_id):
+    """Doctor confirms/completes/cancels an own appointment."""
+    doctor = _my_doctor()
+    actor = current_user()
+    new_status = (request.get_json(silent=True) or {}).get("status") or ""
+    appointment = appointment_service.update_status(doctor, appointment_id, new_status)
+    patient = appointment.patient
+
+    if appointment.status == AppointmentStatus.CONFIRMED:
+        appointment_service.ensure_case_after_confirmation(patient, doctor)
+    notification_service.notify(
+        patient.user, "appointment",
+        f"Appointment {appointment.status.value.lower()}",
+        f"Your {appointment.date.isoformat()} appointment with "
+        f"{actor.full_name} is now {appointment.status.value.lower()}.",
+        "/patient/appointments",
+        commit=False,
+    )
+    audit_service.record_action(
+        actor, "APPOINTMENT_STATUS_CHANGED", "appointment", appointment.id,
+        {"status": appointment.status.value},
+    )
+    db.session.commit()
+    return api_success(
+        "Appointment updated.",
+        {"appointment": appointment_payload(appointment)},
     )
