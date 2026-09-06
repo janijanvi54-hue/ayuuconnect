@@ -137,8 +137,10 @@ flask db upgrade                   # creates tables from models
 flask seed-demo                    # dev-only demo data + accounts
 ```
 
-> When `DATABASE_URL` is left empty, development uses an auto-created
-> `backend/ayuconnect_dev.db` SQLite file — no MySQL server required.
+> When `DATABASE_URL` is left empty, development uses an auto-created SQLite file
+> (`backend/ayuconnect_dev.db`). With a relative URL such as `sqlite:///ayuconnect_dev.db`
+> set in `.env`, the file is created under `backend/instance/`. No MySQL server required
+> in either case.
 
 ## Environment Variables
 
